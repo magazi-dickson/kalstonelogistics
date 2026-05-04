@@ -1,4 +1,4 @@
-name: 🚀 Deploy to cPanel
+name: 🚀 Deploy to kalstonelogistics.com
 
 on:
   push:
@@ -7,44 +7,46 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to kalstonelogistics.com
+    name: SSH Deploy → cPanel
     runs-on: ubuntu-latest
 
     steps:
       - name: ✅ Checkout code
         uses: actions/checkout@v4
 
-      - name: 🚀 Deploy via cPanel Git Version Control API
-        run: |
-          echo "Triggering cPanel Git pull & deploy..."
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
-            "https://kalstonelogistics.com:2083/execute/VersionControl/update?repository=/home/kalstonelogistic/kalstonelogistics")
+      - name: 🚀 Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "=== Starting deployment ==="
 
-          echo "HTTP Response: $RESPONSE"
+            cd ~/kalstonelogistics
 
-          if [ "$RESPONSE" -eq 200 ]; then
-            echo "✅ Deployment triggered successfully!"
-          else
-            echo "⚠️ cPanel returned HTTP $RESPONSE — checking fallback..."
-          fi
+            echo "--- Pulling latest code from GitHub ---"
+            git pull origin main
 
-      - name: 🔄 Restart Python App via cPanel API
-        run: |
-          echo "Restarting Python application..."
-          curl -s \
-            -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
-            "https://kalstonelogistics.com:2083/execute/LangPython/ensure_user_app?app_name=kalstonelogistics" \
-            || echo "Restart signal sent"
+            echo "--- Fixing permissions ---"
+            chmod 755 ~/kalstonelogistics/
+            chmod 664 ~/kalstonelogistics/cargo.db 2>/dev/null || true
+
+            echo "--- Restarting Python app ---"
+            mkdir -p ~/kalstonelogistics/tmp
+            touch ~/kalstonelogistics/tmp/restart.txt
+
+            echo "=== Deployment complete! ==="
 
       - name: 🌐 Verify Live Site
         run: |
-          echo "Waiting 15 seconds for app to restart..."
-          sleep 15
+          echo "Waiting 20 seconds for app to restart..."
+          sleep 20
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://kalstonelogistics.com)
           echo "Live site HTTP status: $STATUS"
           if [ "$STATUS" -eq 200 ]; then
-            echo "✅ Site is live and responding!"
+            echo "✅ kalstonelogistics.com is live and responding!"
           else
-            echo "⚠️ Site returned HTTP $STATUS"
+            echo "⚠️ Site returned HTTP $STATUS — may still be restarting"
           fi
