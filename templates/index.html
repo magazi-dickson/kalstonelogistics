@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <h1 class="hero-title animate-fade-up">Kalstone Logistics <span class="text-yellow">Limited</span></h1>
+        <p class="hero-subtitle animate-fade-up delay-1">"Your Trusted Partner in Logistics"</p>
+        <p class="hero-desc animate-fade-up delay-2">Delivering efficient, transparent, and customer-focused logistics solutions to businesses and individuals.</p>
+        <div class="hero-actions animate-fade-up delay-3">
+            <a href="{{ url_for('services') }}" class="btn btn-primary btn-lg">Explore Services</a>
+            <a href="{{ url_for('track') }}" class="btn btn-yellow btn-lg"><i class="fas fa-satellite-dish"></i> Track Cargo</a>
+            <a href="{{ url_for('contact') }}" class="btn btn-outline-light btn-lg">Get in Touch</a>
+        </div>
+
+        <!-- Quick Track Form -->
+        <form method="POST" action="{{ url_for('track') }}" class="hero-quick-track animate-fade-up delay-3">
+            <div class="hero-track-inner">
+                <i class="fas fa-barcode" style="color:#94a3b8; flex-shrink:0;"></i>
+                <input type="text" name="tracking_id" placeholder="Quick Track — Enter your tracking number..." class="hero-track-input">
+                <button type="submit" class="btn btn-yellow" style="border-radius:6px; padding:8px 20px; white-space:nowrap;">Track <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- About Preview Section -->
+<section class="section about-preview">
+    <div class="container">
+        <div class="grid-2-cols align-center">
+            <div class="about-text animate-slide-right">
+                <h2 class="section-title">Who <span class="text-yellow">We Are</span></h2>
+                <p>Kalstone Logistics Limited is a reliable and fast-growing logistics company established in 2023. We specialize in customs clearance, freight forwarding, cargo handling, import and export facilitation, transit operations, warehousing coordination, and transportation services.</p>
+                <p>Our operations are built on strong professionalism, accuracy, accountability, and strict compliance with all customs regulations and international logistics standards.</p>
+                <a href="{{ url_for('about') }}" class="btn btn-primary mt-4">Learn More About Us <i class="fas fa-arrow-right ml-2"></i></a>
+            </div>
+            <div class="about-stats animate-slide-left">
+                <div class="glass-card stat-card">
+                    <div class="stat-icon"><i class="fas fa-truck-fast"></i></div>
+                    <h3>Fast Delivery</h3>
+                    <p>Timely & Secure</p>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon"><i class="fas fa-shield-halved"></i></div>
+                    <h3>Safe Cargo</h3>
+                    <p>100% Protected</p>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon"><i class="fas fa-globe"></i></div>
+                    <h3>Global Reach</h3>
+                    <p>Cross-border Operations</p>
+                </div>
+                <div class="glass-card stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <h3>Expert Team</h3>
+                    <p>Professional Handlers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Values Preview -->
+<section class="section bg-light">
+    <div class="container text-center">
+        <h2 class="section-title">Why Choose <span class="text-blue">Kalstone?</span></h2>
+        <p class="section-subtitle">We are driven by excellence, delivering logistics solutions that empower your business.</p>
+        
+        <div class="grid-3-cols mt-5">
+            <div class="feature-card animate-fade-up">
+                <div class="feature-icon"><i class="fas fa-hard-hat"></i></div>
+                <h3>Safety First</h3>
+                <p>We prioritize safety in all operations, ensuring protection of goods and personnel at every stage.</p>
+            </div>
+            <div class="feature-card animate-fade-up delay-1">
+                <div class="feature-icon"><i class="fas fa-handshake"></i></div>
+                <h3>Reliability</h3>
+                <p>Consistent, dependable, and timely services. You can rely on us to handle your cargo with care.</p>
+            </div>
+            <div class="feature-card animate-fade-up delay-2">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Efficiency</h3>
+                <p>Optimized processes reducing delays, ensuring smooth coordination for fast and accurate results.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container text-center animate-fade-up">
+        <h2>Ready to move your cargo with confidence?</h2>
+        <p>Partner with Kalstone Logistics today and experience world-class supply chain solutions.</p>
+        <a href="{{ url_for('contact') }}" class="btn btn-yellow btn-lg mt-4">Request a Quote</a>
+    </div>
+</section>
+{% endblock %}

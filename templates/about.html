@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container text-center">
+        <h1 class="page-title animate-fade-up">About Us</h1>
+        <p class="page-subtitle animate-fade-up delay-1">Discover our story and commitment to excellence.</p>
+    </div>
+</section>
+
+<!-- Company Overview -->
+<section class="section">
+    <div class="container">
+        <div class="grid-2-cols align-center">
+            <div class="image-wrapper animate-slide-right">
+                <div class="glass-panel text-center p-5">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Kalstone Logistics Limited Logo" class="about-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div style="display:none; align-items:center; justify-content:center; width:200px; height:200px; background: linear-gradient(135deg, #1e3a8a, #172554); border-radius:16px; margin:0 auto;">
+                    <span style="font-size:4rem; font-weight:800; color:#facc15;">KL</span>
+                </div>
+                </div>
+            </div>
+            <div class="text-content animate-slide-left">
+                <h2 class="section-title">Reliable & <span class="text-yellow">Fast-Growing</span></h2>
+                <p>Kalstone Logistics Limited is a reliable and fast-growing logistics company established in 2023, committed to delivering efficient, transparent, and customer-focused logistics solutions to businesses and individuals across Tanzania, East Africa, and international markets.</p>
+                <p>Our strength lies in our dedicated team of professionals who bring practical experience, industry knowledge, and a strong commitment to excellence. We continuously invest in improving our systems, technology awareness, and service delivery to meet the evolving demands of modern logistics.</p>
+                <p>We are driven by integrity, reliability, teamwork, transparency, and long-term partnerships. Our goal is not only to deliver goods but also to build trust, create value, and support the growth of our clients' businesses through dependable logistics solutions.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="grid-2-cols gap-lg">
+            <div class="card premium-card animate-fade-up">
+                <div class="card-icon"><i class="fas fa-bullseye"></i></div>
+                <h3 class="card-title">Our Mission</h3>
+                <p>To provide efficient, reliable, secure, and customer-focused logistics services that meet and exceed international standards by ensuring the safe, timely, and cost-effective movement of goods across borders and within domestic markets. We are committed to maintaining full compliance with all regulatory and customs requirements while building strong, long-term partnerships.</p>
+            </div>
+            <div class="card premium-card animate-fade-up delay-1">
+                <div class="card-icon"><i class="fas fa-eye"></i></div>
+                <h3 class="card-title">Our Vision</h3>
+                <p>To become a leading, highly reputable, and most trusted logistics service provider in Tanzania, East Africa, and international markets, recognized for excellence, innovation, efficiency, and reliability in delivering world-class supply chain and freight solutions. We aspire to continuously expand our operations and contribute meaningfully to the growth of global trade.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Values -->
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Our Core <span class="text-yellow">Values</span></h2>
+            <p class="section-subtitle">The principles that guide our everyday operations.</p>
+        </div>
+        
+        <div class="grid-3-cols">
+            <div class="value-card animate-fade-up">
+                <h4><i class="fas fa-hard-hat text-blue"></i> Safety First</h4>
+                <p>We prioritize safety in all our logistics operations, ensuring the protection of goods, personnel, and equipment at every stage.</p>
+            </div>
+            <div class="value-card animate-fade-up delay-1">
+                <h4><i class="fas fa-shield-alt text-blue"></i> Integrity</h4>
+                <p>We uphold honesty, transparency, and strong ethical principles. Trust and accountability remain the foundation of our relationships.</p>
+            </div>
+            <div class="value-card animate-fade-up delay-2">
+                <h4><i class="fas fa-clock text-blue"></i> Reliability</h4>
+                <p>We are committed to delivering consistent, dependable, and timely logistics services. Our clients can always rely on us.</p>
+            </div>
+            <div class="value-card animate-fade-up">
+                <h4><i class="fas fa-tachometer-alt text-blue"></i> Efficiency</h4>
+                <p>We focus on optimizing processes, reducing delays, and ensuring smooth coordination to deliver fast, accurate, and effective results.</p>
+            </div>
+            <div class="value-card animate-fade-up delay-1">
+                <h4><i class="fas fa-users text-blue"></i> Customer Focus</h4>
+                <p>We place clients at the center of everything we do, providing tailored solutions and ensuring satisfaction through responsive service.</p>
+            </div>
+            <div class="value-card animate-fade-up delay-2">
+                <h4><i class="fas fa-user-tie text-blue"></i> Professionalism</h4>
+                <p>We maintain high standards of expertise, discipline, and conduct. Our team delivers services with competence and respect.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

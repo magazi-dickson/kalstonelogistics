@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} | Kalstone Logistics Admin</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%231e3a8a'/><text y='.9em' font-size='70' x='10' fill='%23facc15'>K</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body class="admin-body">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-boxes-stacked brand-icon"></i>
+            <span>Kalstone<br><small>Cargo Admin</small></span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('admin_dashboard') }}" class="sidebar-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                <i class="fas fa-gauge-high"></i> Dashboard
+            </a>
+            <a href="{{ url_for('admin_new_shipment') }}" class="sidebar-link {% if request.endpoint == 'admin_new_shipment' %}active{% endif %}">
+                <i class="fas fa-plus-circle"></i> New Shipment
+            </a>
+            <a href="{{ url_for('track') }}" class="sidebar-link" target="_blank">
+                <i class="fas fa-satellite-dish"></i> Public Tracker
+            </a>
+            <a href="{{ url_for('index') }}" class="sidebar-link" target="_blank">
+                <i class="fas fa-globe"></i> Website
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <i class="fas fa-circle-user"></i>
+                <span>{{ session.admin_username }}</span>
+            </div>
+            <a href="{{ url_for('admin_logout') }}" class="sidebar-logout">
+                <i class="fas fa-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+        <!-- Top Bar -->
+        <header class="admin-topbar">
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="topbar-title">
+                <h1 class="admin-page-title">{{ title }}</h1>
+            </div>
+            <div class="topbar-actions">
+                <span class="topbar-badge">
+                    <i class="fas fa-clock"></i>
+                    <span id="adminClock"></span>
+                </span>
+            </div>
+        </header>
+
+        <!-- Flashed Messages -->
+        <div class="admin-alerts">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="admin-alert alert-{{ category }}">
+                    <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' %}times-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+                    <span>{{ message | safe }}</span>
+                    <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Page Content -->
+        <div class="admin-content">
+            {% block admin_content %}{% endblock %}
+        </div>
+    </div>
+
+    <script>
+    // Clock
+    function updateClock() {
+        const el = document.getElementById('adminClock');
+        if (el) el.textContent = new Date().toLocaleTimeString('en-GB');
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    // Sidebar Toggle
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+        document.getElementById('adminSidebar').classList.toggle('sidebar-open');
+    });
+    </script>
+</body>
+</html>

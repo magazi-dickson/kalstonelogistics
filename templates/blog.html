@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container text-center">
+        <h1 class="page-title animate-fade-up">Blog & News</h1>
+        <p class="page-subtitle animate-fade-up delay-1">Stay updated with the latest insights, trends, and news in the logistics industry.</p>
+    </div>
+</section>
+
+<!-- Blog Posts Section -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="grid-3-cols">
+            {% for post in posts %}
+            <article class="blog-card glass-card animate-fade-up {% if loop.index == 2 %}delay-1{% elif loop.index == 3 %}delay-2{% endif %}">
+                <div class="blog-image">
+                    <img src="{{ post.image }}" alt="{{ post.title }}">
+                </div>
+                <div class="blog-content">
+                    <span class="blog-date"><i class="fas fa-calendar-alt text-yellow"></i> {{ post.date }}</span>
+                    <h3 class="blog-title"><a href="#">{{ post.title }}</a></h3>
+                    <p class="blog-excerpt">{{ post.excerpt }}</p>
+                    <a href="#" class="btn btn-outline-light read-more-btn mt-4">Read More <i class="fas fa-arrow-right ml-2"></i></a>
+                </div>
+            </article>
+            {% else %}
+            <div class="text-center w-100" style="grid-column: 1 / -1;">
+                <p>No blog posts available at the moment. Check back soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+/* Additional Blog Specific Styles */
+.blog-card {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.blog-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.blog-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.blog-card:hover .blog-image img {
+    transform: scale(1.05);
+}
+
+.blog-content {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.blog-date {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.blog-title {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+.blog-title a {
+    color: var(--primary-blue-dark);
+}
+
+.blog-title a:hover {
+    color: var(--primary-blue);
+}
+
+.blog-excerpt {
+    color: var(--text-muted);
+    flex-grow: 1;
+}
+
+.read-more-btn {
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+    align-self: flex-start;
+}
+
+.read-more-btn:hover {
+    background-color: var(--primary-blue);
+    color: var(--bg-white);
+}
+</style>
+{% endblock %}

@@ -1,0 +1,40 @@
+# ─── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# ─── Virtual Environments ────────────────────────────────────────────────────
+venv/
+env/
+.env
+.venv
+ENV/
+
+# ─── Database (local SQLite — server creates its own) ────────────────────────
+cargo.db
+*.db
+*.sqlite3
+
+# ─── Deployment Archives ─────────────────────────────────────────────────────
+*.zip
+*.tar.gz
+
+# ─── IDE / OS Files ──────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+*.log
+stderr.log
+stdout.log
+
+# ─── cPanel / Passenger ──────────────────────────────────────────────────────
+tmp/

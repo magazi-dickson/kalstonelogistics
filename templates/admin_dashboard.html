@@ -1,0 +1,137 @@
+{% extends 'admin_base.html' %}
+{% block admin_content %}
+
+<!-- Stats Row -->
+<div class="stats-grid">
+    <div class="stat-widget">
+        <div class="stat-widget-icon icon-blue"><i class="fas fa-boxes-stacked"></i></div>
+        <div class="stat-widget-info">
+            <div class="stat-widget-num">{{ stats.total }}</div>
+            <div class="stat-widget-label">Total Shipments</div>
+        </div>
+    </div>
+    <div class="stat-widget">
+        <div class="stat-widget-icon icon-yellow"><i class="fas fa-truck-moving"></i></div>
+        <div class="stat-widget-info">
+            <div class="stat-widget-num">{{ stats.in_transit }}</div>
+            <div class="stat-widget-label">In Transit</div>
+        </div>
+    </div>
+    <div class="stat-widget">
+        <div class="stat-widget-icon icon-green"><i class="fas fa-circle-check"></i></div>
+        <div class="stat-widget-info">
+            <div class="stat-widget-num">{{ stats.delivered }}</div>
+            <div class="stat-widget-label">Delivered</div>
+        </div>
+    </div>
+    <div class="stat-widget">
+        <div class="stat-widget-icon icon-orange"><i class="fas fa-passport"></i></div>
+        <div class="stat-widget-info">
+            <div class="stat-widget-num">{{ stats.customs }}</div>
+            <div class="stat-widget-label">In Customs</div>
+        </div>
+    </div>
+</div>
+
+<!-- Shipments Table -->
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h2><i class="fas fa-list-ul"></i> All Shipments</h2>
+        <a href="{{ url_for('admin_new_shipment') }}" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> New Shipment
+        </a>
+    </div>
+
+    <!-- Search / Filter -->
+    <div class="table-toolbar">
+        <input type="text" id="tableSearch" class="table-search" placeholder="Search by ID, shipper, consignee...">
+        <select id="statusFilter" class="table-filter">
+            <option value="">All Statuses</option>
+            {% for s in status_list %}
+            <option value="{{ s }}">{{ s }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="admin-table" id="shipmentsTable">
+            <thead>
+                <tr>
+                    <th>Tracking ID</th>
+                    <th>Shipper</th>
+                    <th>Consignee</th>
+                    <th>Route</th>
+                    <th>Mode</th>
+                    <th>Status</th>
+                    <th>Est. Delivery</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in shipments %}
+                <tr class="shipment-row" data-status="{{ s.status }}">
+                    <td>
+                        <a href="{{ url_for('admin_view_shipment', ship_id=s.id) }}" class="tracking-link">
+                            {{ s.tracking_id }}
+                        </a>
+                    </td>
+                    <td>{{ s.shipper_name }}</td>
+                    <td>{{ s.consignee_name }}</td>
+                    <td class="route-cell">
+                        <span class="route-from">{{ s.origin }}</span>
+                        <i class="fas fa-arrow-right route-arrow"></i>
+                        <span class="route-to">{{ s.destination }}</span>
+                    </td>
+                    <td>
+                        <span class="mode-badge">
+                            {% if s.mode == 'Air Freight' %}<i class="fas fa-plane"></i>
+                            {% elif s.mode == 'Road Freight' %}<i class="fas fa-truck"></i>
+                            {% elif s.mode == 'Rail Freight' %}<i class="fas fa-train"></i>
+                            {% else %}<i class="fas fa-ship"></i>{% endif %}
+                            {{ s.mode }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status-pill status-{{ s.status | replace(' ', '-') | lower }}">
+                            {{ s.status }}
+                        </span>
+                    </td>
+                    <td>{{ s.est_delivery if s.est_delivery else '—' }}</td>
+                    <td class="actions-cell">
+                        <a href="{{ url_for('admin_view_shipment', ship_id=s.id) }}" class="action-btn btn-view" title="View"><i class="fas fa-eye"></i></a>
+                        <a href="{{ url_for('admin_edit_shipment', ship_id=s.id) }}" class="action-btn btn-edit" title="Edit"><i class="fas fa-pen"></i></a>
+                        <form method="POST" action="{{ url_for('admin_delete_shipment', ship_id=s.id) }}" style="display:inline" onsubmit="return confirm('Delete this shipment permanently?')">
+                            <button type="submit" class="action-btn btn-delete" title="Delete"><i class="fas fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="table-empty">No shipments found. <a href="{{ url_for('admin_new_shipment') }}">Create one</a>.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+// Live search + filter
+const searchInput = document.getElementById('tableSearch');
+const statusFilter = document.getElementById('statusFilter');
+
+function filterTable() {
+    const q = searchInput.value.toLowerCase();
+    const s = statusFilter.value;
+    document.querySelectorAll('.shipment-row').forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const status = row.dataset.status;
+        const matchQ = q === '' || text.includes(q);
+        const matchS = s === '' || status === s;
+        row.style.display = (matchQ && matchS) ? '' : 'none';
+    });
+}
+searchInput.addEventListener('input', filterTable);
+statusFilter.addEventListener('change', filterTable);
+</script>
+{% endblock %}

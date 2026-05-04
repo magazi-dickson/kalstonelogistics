@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container text-center">
+        <h1 class="page-title animate-fade-up">Our Services</h1>
+        <p class="page-subtitle animate-fade-up delay-1">Comprehensive logistics solutions handled by experience and delivered with care.</p>
+    </div>
+</section>
+
+<!-- Services List -->
+<section class="section bg-light">
+    <div class="container">
+        <div class="services-grid">
+            <!-- Service 1 -->
+            <div class="service-card glass-card animate-fade-up">
+                <div class="service-number">01</div>
+                <h3 class="service-title">Local & International Importation</h3>
+                <p class="service-desc">We facilitate smooth, secure, and fully compliant importation processes by ensuring timely final clearance of goods locally and internationally. Our team handles documentation, customs procedures, and coordination for fast release.</p>
+            </div>
+            
+            <!-- Service 2 -->
+            <div class="service-card glass-card animate-fade-up delay-1">
+                <div class="service-number">02</div>
+                <h3 class="service-title">Transit Goods Clearance</h3>
+                <p class="service-desc">We specialize in the efficient clearance of transit goods, ensuring seamless movement of cargo across borders. Our services minimize delays, reduce risks, and ensure safe arrival at intended destinations.</p>
+            </div>
+            
+            <!-- Service 3 -->
+            <div class="service-card glass-card animate-fade-up delay-2">
+                <div class="service-number">03</div>
+                <h3 class="service-title">Export Services Worldwide</h3>
+                <p class="service-desc">Reliable and professional export solutions enabling clients to ship goods safely across the globe. We manage documentation, compliance, and logistics coordination to support international trade operations.</p>
+            </div>
+            
+            <!-- Service 4 -->
+            <div class="service-card glass-card animate-fade-up">
+                <div class="service-number">04</div>
+                <h3 class="service-title">Trans-shipment Clearance</h3>
+                <p class="service-desc">We manage the clearance and coordination of trans-shipment cargo, ensuring smooth transfer between different transport modes and transit points with accuracy and minimal handling delays.</p>
+            </div>
+            
+            <!-- Service 5 -->
+            <div class="service-card glass-card animate-fade-up delay-1">
+                <div class="service-number">05</div>
+                <h3 class="service-title">Temporary Importation Services</h3>
+                <p class="service-desc">We assist clients with all procedures related to temporary importation of goods, ensuring full compliance with customs regulations and proper documentation for time-bound cargo entry and exit.</p>
+            </div>
+            
+            <!-- Service 6 -->
+            <div class="service-card glass-card animate-fade-up delay-2">
+                <div class="service-number">06</div>
+                <h3 class="service-title">Cargo Handling & Transport</h3>
+                <p class="service-desc">Complete end-to-end logistics solutions, including cargo handling, transportation, warehousing coordination, and supply chain management focusing on safety and efficiency.</p>
+            </div>
+        </div>
+        
+        <!-- Service 7 / Support -->
+        <div class="support-card mt-5 animate-fade-up">
+            <div class="grid-2-cols align-center">
+                <div>
+                    <h3>07. Client Support & Consultation</h3>
+                    <p>We provide professional guidance, expert advice, and prompt support for all logistics-related inquiries and challenges. Our team ensures clear communication and effective solutions at every stage.</p>
+                </div>
+                <div class="text-right text-center-mobile mt-mobile-3">
+                    <a href="{{ url_for('contact') }}" class="btn btn-yellow">Contact Our Support Team</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Target Markets -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">Our Target <span class="text-blue">Markets</span></h2>
+        
+        <div class="markets-list">
+            <div class="market-item animate-slide-right">
+                <div class="market-icon"><i class="fas fa-ship"></i></div>
+                <div class="market-content">
+                    <h4>Importers & Exporters</h4>
+                    <p>Facilitating seamless cross-border trade ensuring fast movement while maintaining regulatory compliance.</p>
+                </div>
+            </div>
+            
+            <div class="market-item animate-slide-left">
+                <div class="market-icon"><i class="fas fa-industry"></i></div>
+                <div class="market-content">
+                    <h4>Manufacturing Companies</h4>
+                    <p>Ensuring timely movement of raw materials, machinery, and finished products to support uninterrupted production.</p>
+                </div>
+            </div>
+            
+            <div class="market-item animate-slide-right">
+                <div class="market-icon"><i class="fas fa-store"></i></div>
+                <div class="market-content">
+                    <h4>Trading & Wholesale Businesses</h4>
+                    <p>Fast, secure, and dependable logistics for bulk goods distribution to reach markets on time.</p>
+                </div>
+            </div>
+            
+            <div class="market-item animate-slide-left">
+                <div class="market-icon"><i class="fas fa-building"></i></div>
+                <div class="market-content">
+                    <h4>Construction & Engineering</h4>
+                    <p>Handling heavy machinery, building materials, and project-based cargo for safe and timely delivery.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

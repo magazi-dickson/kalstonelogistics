@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kalstone Logistics Limited - Your Trusted Partner in Logistics. Reliable, fast-growing logistics company in Tanzania.">
+    <title>{{ title if title else 'Welcome' }} | Kalstone Logistics Limited</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%231e3a8a'/><text y='.9em' font-size='70' x='10' fill='%23facc15'>K</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <span class="logo-text">Kalstone <span class="text-yellow">Logistics</span></span>
+            </a>
+            
+            <!-- Mobile Menu Toggle -->
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">Home</a>
+                <a href="{{ url_for('about') }}" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">About Us</a>
+                <a href="{{ url_for('services') }}" class="nav-link {% if request.endpoint == 'services' %}active{% endif %}">Services</a>
+                <a href="{{ url_for('blog') }}" class="nav-link {% if request.endpoint == 'blog' %}active{% endif %}">Blog</a>
+                <a href="{{ url_for('track') }}" class="nav-link nav-track {% if request.endpoint == 'track' %}active{% endif %}"><i class="fas fa-satellite-dish"></i> Track Cargo</a>
+                <a href="{{ url_for('contact') }}" class="nav-link btn btn-primary {% if request.endpoint == 'contact' %}active{% endif %}">Contact Us</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-col brand-col">
+                <a href="{{ url_for('index') }}" class="logo">
+                    <span class="logo-text">Kalstone <span class="text-yellow">Logistics</span></span>
+                </a>
+                <p class="slogan">"Your Trusted Partner in Logistics"</p>
+                <p class="footer-desc">Delivering efficient, transparent, and customer-focused logistics solutions to businesses and individuals across Tanzania and beyond.</p>
+            </div>
+            
+            <div class="footer-col links-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('about') }}">About Us</a></li>
+                    <li><a href="{{ url_for('services') }}">Services</a></li>
+                    <li><a href="{{ url_for('blog') }}">Blog</a></li>
+                    <li><a href="{{ url_for('track') }}">Track Cargo</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col contact-col">
+                <h3>Contact Info</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> P.O. Box 78001, Kinondoni Namanga, Dar es Salaam, Tanzania</li>
+                    <li><i class="fas fa-phone"></i> +255 (0) 719 502 226</li>
+                    <li><i class="fas fa-envelope"></i> info@kalstonelogistics.com</li>
+                </ul>
+                <div class="office-hours">
+                    <h4>Office Hours</h4>
+                    <p>Mon - Fri: 8:00 AM – 5:00 PM</p>
+                    <p>Saturday: 9:00 AM – 2:00 PM</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Kalstone Logistics Limited. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

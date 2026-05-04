@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container text-center">
+        <h1 class="page-title animate-fade-up">Contact Us</h1>
+        <p class="page-subtitle animate-fade-up delay-1">Connect with us! We are here to help you with all your logistics needs.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="grid-2-cols gap-lg">
+            
+            <!-- Contact Info -->
+            <div class="contact-info animate-slide-right">
+                <h2 class="mb-4">Get in <span class="text-yellow">Touch</span></h2>
+                <p class="mb-5">We are always ready to provide professional guidance, expert advice, and prompt support for all logistics-related inquiries and challenges.</p>
+                
+                <div class="info-block glass-card mb-4">
+                    <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="info-text">
+                        <h4>Head Office</h4>
+                        <p>P.O. Box 78001, Kinondoni Namanga,<br>Dar es Salaam, Tanzania, East Africa</p>
+                    </div>
+                </div>
+                
+                <div class="info-block glass-card mb-4">
+                    <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+                    <div class="info-text">
+                        <h4>Telephone</h4>
+                        <p>+255 (0) 719 502 226</p>
+                    </div>
+                </div>
+                
+                <div class="info-block glass-card mb-4">
+                    <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="info-text">
+                        <h4>Email</h4>
+                        <p>info@kalstonelogistics.com</p>
+                    </div>
+                </div>
+                
+                <div class="info-block glass-card">
+                    <div class="info-icon"><i class="fas fa-clock"></i></div>
+                    <div class="info-text">
+                        <h4>Office Hours</h4>
+                        <p>Monday - Friday: 8:00 AM – 5:00 PM<br>Saturday: 9:00 AM – 2:00 PM<br>Sunday & Public Holidays: Closed</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Form -->
+            <div class="contact-form-wrapper animate-slide-left">
+                <div class="glass-panel p-5">
+                    <h3 class="mb-4 text-blue">Send us a message</h3>
+                    
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <form action="{{ url_for('contact') }}" method="POST" id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Your Name *</label>
+                            <input type="text" id="name" name="name" class="form-control" required placeholder="John Doe">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" class="form-control" required placeholder="john@example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" class="form-control" placeholder="How can we help?">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" class="form-control" rows="5" required placeholder="Your message here..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block mt-4">Send Message <i class="fas fa-paper-plane ml-2"></i></button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'admin_base.html' %}
+{% block admin_content %}
+
+<div class="form-page-layout">
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>
+                <i class="fas fa-{% if shipment %}pen{% else %}plus-circle{% endif %}"></i>
+                {% if shipment %}Edit Shipment — {{ shipment.tracking_id }}{% else %}Create New Shipment{% endif %}
+            </h2>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-admin btn-sm">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <form method="POST" class="shipment-form">
+            <div class="form-section-title"><i class="fas fa-users"></i> Parties</div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label class="form-label">Shipper Name *</label>
+                    <input type="text" name="shipper_name" class="form-control"
+                           value="{{ shipment.shipper_name if shipment else '' }}" required placeholder="Exporter / sender name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Consignee Name *</label>
+                    <input type="text" name="consignee_name" class="form-control"
+                           value="{{ shipment.consignee_name if shipment else '' }}" required placeholder="Importer / receiver name">
+                </div>
+            </div>
+
+            <div class="form-section-title"><i class="fas fa-route"></i> Route & Cargo</div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label class="form-label">Origin *</label>
+                    <input type="text" name="origin" class="form-control"
+                           value="{{ shipment.origin if shipment else '' }}" required placeholder="e.g. Shanghai, China">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Destination *</label>
+                    <input type="text" name="destination" class="form-control"
+                           value="{{ shipment.destination if shipment else '' }}" required placeholder="e.g. Dar es Salaam, Tanzania">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Cargo Description *</label>
+                <textarea name="description" class="form-control" rows="2" required
+                          placeholder="e.g. Electronics & Machinery Parts">{{ shipment.description if shipment else '' }}</textarea>
+            </div>
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label class="form-label">Transport Mode</label>
+                    <select name="mode" class="form-control">
+                        {% for m in modes %}
+                        <option value="{{ m }}" {% if shipment and shipment.mode == m %}selected{% endif %}>{{ m }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" name="weight" class="form-control" step="0.01" min="0"
+                           value="{{ shipment.weight if shipment else '' }}" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Volume (m³)</label>
+                    <input type="number" name="volume" class="form-control" step="0.01" min="0"
+                           value="{{ shipment.volume if shipment else '' }}" placeholder="0.00">
+                </div>
+            </div>
+
+            <div class="form-section-title"><i class="fas fa-flag"></i> Status & Delivery</div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label class="form-label">Current Status</label>
+                    <select name="status" class="form-control">
+                        {% for s in status_list %}
+                        <option value="{{ s }}" {% if shipment and shipment.status == s %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Estimated Delivery Date</label>
+                    <input type="date" name="est_delivery" class="form-control"
+                           value="{{ shipment.est_delivery if shipment else '' }}">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-admin">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    {% if shipment %}Save Changes{% else %}Create Shipment{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

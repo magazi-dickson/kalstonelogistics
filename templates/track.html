@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header track-hero">
+    <div class="container text-center">
+        <div class="track-hero-icon animate-fade-up">
+            <i class="fas fa-satellite-dish"></i>
+        </div>
+        <h1 class="page-title animate-fade-up">Track Your <span class="text-yellow">Cargo</span></h1>
+        <p class="page-subtitle animate-fade-up delay-1">Real-time visibility into your shipment's journey — from origin to destination.</p>
+
+        <!-- Tracking Form -->
+        <form method="POST" class="track-form animate-fade-up delay-2" id="track-form">
+            <div class="track-input-group">
+                <i class="fas fa-barcode track-input-icon"></i>
+                <input type="text"
+                       id="tracking_id"
+                       name="tracking_id"
+                       class="track-input"
+                       placeholder="Enter Tracking Number (e.g. KL-2026-001)"
+                       value="{{ tracking_id }}"
+                       required
+                       autocomplete="off">
+                <button type="submit" class="btn btn-yellow btn-track">
+                    <i class="fas fa-search"></i> Track
+                </button>
+            </div>
+            <p class="track-hint">Try: <span class="tracking-demo" onclick="fillDemo('KL-2026-001')">KL-2026-001</span> · <span class="tracking-demo" onclick="fillDemo('KL-2026-002')">KL-2026-002</span> · <span class="tracking-demo" onclick="fillDemo('KL-2026-003')">KL-2026-003</span></p>
+        </form>
+    </div>
+</section>
+
+<!-- Result Section -->
+<section class="section">
+    <div class="container">
+
+        {% if error %}
+        <div class="track-error animate-fade-up">
+            <div class="track-error-icon"><i class="fas fa-exclamation-circle"></i></div>
+            <div>
+                <h3>Shipment Not Found</h3>
+                <p>{{ error | safe }}</p>
+                <p class="mt-1" style="font-size:0.9rem; color: var(--text-muted);">If you believe this is an error, please <a href="{{ url_for('contact') }}">contact our support team</a>.</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if shipment %}
+        <!-- Shipment Header Card -->
+        <div class="shipment-result-card animate-fade-up">
+            <div class="shipment-result-header">
+                <div>
+                    <span class="tracking-badge">{{ shipment.tracking_id }}</span>
+                    <h2 class="shipment-result-title">{{ shipment.description }}</h2>
+                </div>
+                <div class="status-pill status-{{ shipment.status | replace(' ', '-') | lower }}">
+                    {{ shipment.status }}
+                </div>
+            </div>
+
+            <!-- Route Display -->
+            <div class="route-display">
+                <div class="route-point">
+                    <div class="route-icon"><i class="fas fa-circle-dot"></i></div>
+                    <div>
+                        <div class="route-label">Origin</div>
+                        <div class="route-city">{{ shipment.origin }}</div>
+                    </div>
+                </div>
+                <div class="route-line">
+                    <div class="route-mode-icon">
+                        {% if shipment.mode == 'Air Freight' %}<i class="fas fa-plane"></i>
+                        {% elif shipment.mode == 'Road Freight' %}<i class="fas fa-truck"></i>
+                        {% elif shipment.mode == 'Rail Freight' %}<i class="fas fa-train"></i>
+                        {% else %}<i class="fas fa-ship"></i>{% endif %}
+                    </div>
+                    <div class="route-arrow-line"></div>
+                </div>
+                <div class="route-point">
+                    <div class="route-icon dest"><i class="fas fa-location-dot"></i></div>
+                    <div>
+                        <div class="route-label">Destination</div>
+                        <div class="route-city">{{ shipment.destination }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipment Details Grid -->
+            <div class="shipment-details-grid">
+                <div class="detail-item">
+                    <i class="fas fa-user detail-icon"></i>
+                    <div>
+                        <div class="detail-label">Shipper</div>
+                        <div class="detail-value">{{ shipment.shipper_name }}</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-user-check detail-icon"></i>
+                    <div>
+                        <div class="detail-label">Consignee</div>
+                        <div class="detail-value">{{ shipment.consignee_name }}</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-weight-hanging detail-icon"></i>
+                    <div>
+                        <div class="detail-label">Weight</div>
+                        <div class="detail-value">{{ shipment.weight }} kg</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-cube detail-icon"></i>
+                    <div>
+                        <div class="detail-label">Volume</div>
+                        <div class="detail-value">{{ shipment.volume }} m³</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-ship detail-icon"></i>
+                    <div>
+                        <div class="detail-label">Transport Mode</div>
+                        <div class="detail-value">{{ shipment.mode }}</div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-calendar-check detail-icon"></i>
+                    <div>
+                        <div class="detail-label">Est. Delivery</div>
+                        <div class="detail-value">{{ shipment.est_delivery if shipment.est_delivery else '—' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tracking Timeline -->
+        {% if events %}
+        <div class="timeline-section animate-fade-up delay-1">
+            <h3 class="timeline-title"><i class="fas fa-route"></i> Shipment Journey</h3>
+            <div class="timeline">
+                {% for event in events %}
+                <div class="timeline-item {% if loop.last %}timeline-latest{% endif %}">
+                    <div class="timeline-dot {% if loop.last %}dot-active{% endif %}">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="timeline-connector {% if loop.last %}connector-last{% endif %}"></div>
+                    <div class="timeline-content {% if loop.last %}content-latest{% endif %}">
+                        <div class="timeline-header">
+                            <span class="timeline-status">{{ event.event_status }}</span>
+                            <span class="timeline-time">{{ event.timestamp }}</span>
+                        </div>
+                        <div class="timeline-location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</div>
+                        {% if event.notes %}
+                        <div class="timeline-notes">{{ event.notes }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Help Section -->
+        <div class="track-help animate-fade-up delay-2">
+            <i class="fas fa-headset"></i>
+            <div>
+                <strong>Need assistance with your shipment?</strong>
+                <p>Contact our logistics team at <a href="tel:+255719502226">+255 (0) 719 502 226</a> or <a href="mailto:info@kalstonelogistics.com">info@kalstonelogistics.com</a></p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not shipment and not error %}
+        <!-- Empty State -->
+        <div class="track-empty animate-fade-up">
+            <div class="track-empty-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h3>Enter Your Tracking Number</h3>
+            <p>Enter your Kalstone Logistics tracking number above to get real-time updates on your shipment's location and status.</p>
+            <a href="{{ url_for('contact') }}" class="btn btn-primary mt-4">Request a Shipment</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+<script>
+function fillDemo(id) {
+    document.getElementById('tracking_id').value = id;
+    document.getElementById('track-form').submit();
+}
+</script>

@@ -1,0 +1,149 @@
+{% extends 'admin_base.html' %}
+{% block admin_content %}
+
+<div class="detail-layout">
+    <!-- Left: Shipment Info -->
+    <div>
+        <!-- Shipment Card -->
+        <div class="admin-card mb-admin">
+            <div class="admin-card-header">
+                <h2><i class="fas fa-box"></i> {{ shipment.tracking_id }}</h2>
+                <div style="display:flex; gap:0.5rem;">
+                    <a href="{{ url_for('admin_edit_shipment', ship_id=shipment.id) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-pen"></i> Edit
+                    </a>
+                    <a href="{{ url_for('track') }}?q={{ shipment.tracking_id }}" target="_blank" class="btn btn-outline-admin btn-sm">
+                        <i class="fas fa-external-link-alt"></i> Public View
+                    </a>
+                </div>
+            </div>
+            <div class="detail-info-grid">
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-user"></i> Shipper</div>
+                    <div class="dinfo-value">{{ shipment.shipper_name }}</div>
+                </div>
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-user-check"></i> Consignee</div>
+                    <div class="dinfo-value">{{ shipment.consignee_name }}</div>
+                </div>
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-circle-dot"></i> Origin</div>
+                    <div class="dinfo-value">{{ shipment.origin }}</div>
+                </div>
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-location-dot"></i> Destination</div>
+                    <div class="dinfo-value">{{ shipment.destination }}</div>
+                </div>
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-file-text"></i> Description</div>
+                    <div class="dinfo-value">{{ shipment.description }}</div>
+                </div>
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-ship"></i> Mode</div>
+                    <div class="dinfo-value">{{ shipment.mode }}</div>
+                </div>
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-weight-hanging"></i> Weight</div>
+                    <div class="dinfo-value">{{ shipment.weight }} kg</div>
+                </div>
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-cube"></i> Volume</div>
+                    <div class="dinfo-value">{{ shipment.volume }} m³</div>
+                </div>
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-flag"></i> Current Status</div>
+                    <div class="dinfo-value">
+                        <span class="status-pill status-{{ shipment.status | replace(' ', '-') | lower }}">{{ shipment.status }}</span>
+                    </div>
+                </div>
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-calendar-check"></i> Est. Delivery</div>
+                    <div class="dinfo-value">{{ shipment.est_delivery if shipment.est_delivery else '—' }}</div>
+                </div>
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-calendar-plus"></i> Created</div>
+                    <div class="dinfo-value">{{ shipment.created_at }}</div>
+                </div>
+                <div class="dinfo-item">
+                    <div class="dinfo-label"><i class="fas fa-rotate"></i> Last Updated</div>
+                    <div class="dinfo-value">{{ shipment.updated_at }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Events Timeline + Add Event Form -->
+    <div>
+        <!-- Add Event Form -->
+        <div class="admin-card mb-admin">
+            <div class="admin-card-header">
+                <h2><i class="fas fa-plus-circle"></i> Add Tracking Event</h2>
+            </div>
+            <form method="POST" action="{{ url_for('admin_add_event', ship_id=shipment.id) }}" class="event-form">
+                <div class="form-group">
+                    <label class="form-label">Status / Milestone</label>
+                    <select name="event_status" class="form-control" required>
+                        {% for s in status_list %}
+                        <option value="{{ s }}">{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" name="location" class="form-control" placeholder="e.g. Dar es Salaam Port, Tanzania" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes (optional)</label>
+                    <textarea name="notes" class="form-control" rows="2" placeholder="Any additional details..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Timestamp</label>
+                    <input type="datetime-local" name="timestamp" class="form-control" id="eventTimestamp">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-paper-plane"></i> Add Event
+                </button>
+            </form>
+        </div>
+
+        <!-- Existing Events -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2><i class="fas fa-route"></i> Tracking History</h2>
+                <span class="count-badge">{{ events | length }} events</span>
+            </div>
+            {% if events %}
+            <div class="admin-timeline">
+                {% for event in events | reverse %}
+                <div class="admin-timeline-item">
+                    <div class="admin-tl-dot {% if loop.first %}dot-latest{% endif %}"></div>
+                    <div class="admin-tl-content">
+                        <div class="admin-tl-header">
+                            <span class="admin-tl-status">{{ event.event_status }}</span>
+                            <span class="admin-tl-time">{{ event.timestamp }}</span>
+                        </div>
+                        <div class="admin-tl-location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</div>
+                        {% if event.notes %}<div class="admin-tl-notes">{{ event.notes }}</div>{% endif %}
+                        <form method="POST" action="{{ url_for('admin_delete_event', event_id=event.id) }}"
+                              onsubmit="return confirm('Remove this event?')" style="margin-top:0.5rem;">
+                            <button type="submit" class="btn-text-danger"><i class="fas fa-trash"></i> Remove</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="no-events-msg">No tracking events yet. Add one above.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Pre-fill timestamp with now
+const tInput = document.getElementById('eventTimestamp');
+const now = new Date();
+now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+tInput.value = now.toISOString().slice(0, 16);
+</script>
+{% endblock %}
