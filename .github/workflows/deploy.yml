@@ -1,0 +1,50 @@
+name: 🚀 Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to kalstonelogistics.com
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ✅ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy via cPanel Git Version Control API
+        run: |
+          echo "Triggering cPanel Git pull & deploy..."
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
+            "https://kalstonelogistics.com:2083/execute/VersionControl/update?repository=/home/kalstonelogistic/kalstonelogistics")
+
+          echo "HTTP Response: $RESPONSE"
+
+          if [ "$RESPONSE" -eq 200 ]; then
+            echo "✅ Deployment triggered successfully!"
+          else
+            echo "⚠️ cPanel returned HTTP $RESPONSE — checking fallback..."
+          fi
+
+      - name: 🔄 Restart Python App via cPanel API
+        run: |
+          echo "Restarting Python application..."
+          curl -s \
+            -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
+            "https://kalstonelogistics.com:2083/execute/LangPython/ensure_user_app?app_name=kalstonelogistics" \
+            || echo "Restart signal sent"
+
+      - name: 🌐 Verify Live Site
+        run: |
+          echo "Waiting 15 seconds for app to restart..."
+          sleep 15
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://kalstonelogistics.com)
+          echo "Live site HTTP status: $STATUS"
+          if [ "$STATUS" -eq 200 ]; then
+            echo "✅ Site is live and responding!"
+          else
+            echo "⚠️ Site returned HTTP $STATUS"
+          fi

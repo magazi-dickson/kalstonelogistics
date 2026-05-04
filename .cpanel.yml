@@ -1,0 +1,9 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=~/kalstonelogistics/
+    - /bin/cp -R $DEPLOYPATH/../kalstonelogistics/. $DEPLOYPATH
+    - mkdir -p ~/kalstonelogistics/tmp
+    - touch ~/kalstonelogistics/tmp/restart.txt
+    - chmod 755 ~/kalstonelogistics/
+    - chmod 664 ~/kalstonelogistics/cargo.db 2>/dev/null || true
