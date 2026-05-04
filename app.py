@@ -2,11 +2,17 @@ from flask import Flask, render_template, request, flash, redirect, url_for, jso
 import sqlite3
 import os
 import uuid
+import hmac
+import hashlib
+import subprocess
 from datetime import datetime
 from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = 'kalstone_secret_key_cargo_2026_XkQ9!'
+
+# GitHub webhook secret — must match what you set in GitHub
+WEBHOOK_SECRET = 'kalstone_deploy_2026!'
 
 # ─── Database Setup ──────────────────────────────────────────────────────────
 
@@ -444,6 +450,52 @@ def api_track(tracking_id):
         'shipment': dict(shipment),
         'events': [dict(e) for e in events]
     })
+
+
+# ─── GitHub Webhook Auto-Deploy ───────────────────────────────────────────────
+
+@app.route('/webhook/deploy', methods=['POST'])
+def webhook_deploy():
+    """Receives GitHub push webhook and auto-deploys the latest code."""
+    # Verify signature
+    sig_header = request.headers.get('X-Hub-Signature-256', '')
+    if not sig_header:
+        return jsonify({'error': 'Missing signature'}), 401
+
+    body = request.get_data()
+    expected = 'sha256=' + hmac.new(
+        WEBHOOK_SECRET.encode(), body, hashlib.sha256
+    ).hexdigest()
+
+    if not hmac.compare_digest(expected, sig_header):
+        return jsonify({'error': 'Invalid signature'}), 403
+
+    # Only deploy on push to main
+    payload = request.get_json(silent=True) or {}
+    ref = payload.get('ref', '')
+    if ref != 'refs/heads/main':
+        return jsonify({'message': f'Ignored ref: {ref}'}), 200
+
+    # Run git pull and restart
+    app_dir = os.path.dirname(os.path.abspath(__file__))
+    try:
+        result = subprocess.run(
+            ['git', 'pull', 'origin', 'main'],
+            cwd=app_dir, capture_output=True, text=True, timeout=60
+        )
+        # Touch restart.txt to trigger Passenger reload
+        restart_dir = os.path.join(app_dir, 'tmp')
+        os.makedirs(restart_dir, exist_ok=True)
+        open(os.path.join(restart_dir, 'restart.txt'), 'w').close()
+
+        return jsonify({
+            'message': 'Deployed successfully',
+            'stdout': result.stdout,
+            'stderr': result.stderr,
+            'returncode': result.returncode
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

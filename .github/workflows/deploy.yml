@@ -7,46 +7,39 @@ on:
 
 jobs:
   deploy:
-    name: SSH Deploy → cPanel
+    name: Deploy via Webhook
     runs-on: ubuntu-latest
 
     steps:
       - name: ✅ Checkout code
         uses: actions/checkout@v4
 
-      - name: 🚀 Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 21098
-          script: |
-            echo "=== Starting deployment ==="
+      - name: 🚀 Trigger cPanel Webhook Deploy
+        run: |
+          echo "Sending deploy webhook to kalstonelogistics.com..."
 
-            cd ~/kalstonelogistics
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "X-Hub-Signature-256: sha256=$(echo -n '${{ github.event.head_commit.id }}' | openssl dgst -sha256 -hmac '${{ secrets.WEBHOOK_SECRET }}' | awk '{print $2}')" \
+            "https://kalstonelogistics.com/webhook/deploy" \
+            -d '{"ref":"refs/heads/main","pusher":{"name":"github-actions"}}' \
+            --max-time 120 2>&1)
 
-            echo "--- Pulling latest code from GitHub ---"
-            git pull origin main
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | head -n -1)
 
-            echo "--- Fixing permissions ---"
-            chmod 755 ~/kalstonelogistics/
-            chmod 664 ~/kalstonelogistics/cargo.db 2>/dev/null || true
-
-            echo "--- Restarting Python app ---"
-            mkdir -p ~/kalstonelogistics/tmp
-            touch ~/kalstonelogistics/tmp/restart.txt
-
-            echo "=== Deployment complete! ==="
+          echo "HTTP Status: $HTTP_CODE"
+          echo "Response: $BODY"
 
       - name: 🌐 Verify Live Site
         run: |
-          echo "Waiting 20 seconds for app to restart..."
-          sleep 20
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://kalstonelogistics.com)
+          echo "Waiting 25 seconds for app to restart..."
+          sleep 25
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://kalstonelogistics.com --max-time 30)
           echo "Live site HTTP status: $STATUS"
           if [ "$STATUS" -eq 200 ]; then
-            echo "✅ kalstonelogistics.com is live and responding!"
+            echo "✅ kalstonelogistics.com is live!"
           else
-            echo "⚠️ Site returned HTTP $STATUS — may still be restarting"
+            echo "⚠️ Site returned HTTP $STATUS"
           fi
